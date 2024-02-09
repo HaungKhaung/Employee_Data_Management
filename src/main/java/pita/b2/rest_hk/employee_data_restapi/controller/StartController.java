@@ -1,5 +1,5 @@
 /**
- * 
+ * Controller class for managing employee data REST API endpoints.
  */
 package pita.b2.rest_hk.employee_data_restapi.controller;
 
@@ -26,95 +26,93 @@ import io.swagger.annotations.Api;
 import pita.b2.rest_hk.employee_data_restapi.model.EmployeeModel;
 import pita.b2.rest_hk.employee_data_restapi.service.serviceImpl.EmployeeServiceImpl;
 
-
 @Api(tags = "Employee Controller List")
 @RestController
 public class StartController {
-	
-	@Autowired
-	private EmployeeServiceImpl employeeServiceImpl;	
-	
-	/**
-	 
-	 * @return ModelAndView object with employee data and view name.
-	 */
-	@RequestMapping(value = {"allEmployee"}, method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<EmployeeModel> index() {
-		return employeeServiceImpl.selectAllData();
-	}
-	
-	/**
-	 * 
-	 * @param employee
-	 * @param bindResult
-	 * @return
-	 */
-	@RequestMapping(value = {"employeeDataAdd"}, method= RequestMethod.GET ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public ResponseEntity<Object> addEmployee(@Valid @RequestBody EmployeeModel employee, BindingResult bindResult) {
-		if (bindResult.hasErrors()) {
-	        Map<String, Object> errorResponse = new HashMap<>();
-	        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-	        errorResponse.put("message", "validation error");
-	        errorResponse.put("errors", bindResult.getFieldError());
-	        
-	        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	    }
+    
+    @Autowired
+    private EmployeeServiceImpl employeeServiceImpl;    
+    
+    /**
+     * Endpoint to retrieve all employee data.
+     * @return List of EmployeeModel objects representing all employee data.
+     */
+    @RequestMapping(value = {"allEmployee"}, method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<EmployeeModel> index() {
+        return employeeServiceImpl.selectAllData();
+    }
+    
+    /**
+     * Endpoint to add new employee data.
+     * @param employee The EmployeeModel object representing the new employee data.
+     * @param bindResult BindingResult object for validating the input.
+     * @return ResponseEntity containing the result of the operation.
+     */
+    @RequestMapping(value = {"employeeDataAdd"}, method= RequestMethod.GET ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Object> addEmployee(@Valid @RequestBody EmployeeModel employee, BindingResult bindResult) {
+        if (bindResult.hasErrors()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+            errorResponse.put("message", "validation error");
+            errorResponse.put("errors", bindResult.getFieldError());
+            
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
-	    int result = employeeServiceImpl.employeeDataAdd(employee);
-	    Map<String, Object> successResponse = new HashMap<>();
+        int result = employeeServiceImpl.employeeDataAdd(employee);
+        Map<String, Object> successResponse = new HashMap<>();
         successResponse.put("status", HttpStatus.OK.value());
         successResponse.put("message", "Employee Added Successfully");
         successResponse.put("result", result);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
-	}
-	/**
-	 * 
-	 * @param employeeId
-	 * @return
-	 */
-	
-	@RequestMapping(value = "employeeDataDelete",method= RequestMethod.GET , consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public int deleteEmployee(@PathVariable("employeeId") int employeeId) {
-		return employeeServiceImpl.deleteEmployee(employeeId);
-	}
-	
-	/**
-	 * 
-	 * @param employeeId
-	 * @param employeeModel
-	 * @return
-	 */
-
-	@RequestMapping(value= {"employeeDataUpdate"},method= RequestMethod.POST , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public int updateProcess(@PathVariable("employeeId") int employeeId,@RequestBody EmployeeModel employeeModel) {
+    }
+    
+    /**
+     * Endpoint to delete an employee data by employee ID.
+     * @param employeeId The ID of the employee to delete.
+     * @return Integer representing the result of the operation.
+     */
+    @RequestMapping(value = "employeeDataDelete",method= RequestMethod.GET , consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public int deleteEmployee(@PathVariable("employeeId") int employeeId) {
+        return employeeServiceImpl.deleteEmployee(employeeId);
+    }
+    
+    /**
+     * Endpoint to update employee data by employee ID.
+     * @param employeeId The ID of the employee to update.
+     * @param employeeModel The updated EmployeeModel object.
+     * @return Integer representing the result of the operation.
+     */
+    @RequestMapping(value= {"employeeDataUpdate"},method= RequestMethod.POST , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public int updateProcess(@PathVariable("employeeId") int employeeId,@RequestBody EmployeeModel employeeModel) {
         return employeeServiceImpl.updateProcess(employeeId, employeeModel);
     }
-	
-	/**
-	 * 
-	 * @param employeeName
-	 * @return
-	 */
-	 @RequestMapping(value = "searchByName",method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-	 @ResponseBody	
-	 public List<EmployeeModel> searchByName(@ModelAttribute(name = "employeeName") String employeeName) {
-			return employeeServiceImpl.searchByName(employeeName);
-		}
-	 
-	/**
-	 * 
-	 * @param employeeId
-	 * @return
-	 */
-	 @RequestMapping(value = "searchById",method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-	 @ResponseBody	
-	 public List<EmployeeModel> searchById(@PathVariable("employeeId") int employeeId) {
-			return employeeServiceImpl.searchByIds(employeeId);
-		}
+    
+    /**
+     * Endpoint to search for employees by name.
+     * @param employeeName The name of the employee to search for.
+     * @return List of EmployeeModel objects matching the search criteria.
+     */
+     @RequestMapping(value = "searchByName",method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
+     @ResponseBody   
+     public List<EmployeeModel> searchByName(@ModelAttribute(name = "employeeName") String employeeName) {
+            return employeeServiceImpl.searchByName(employeeName);
+        }
+     
+    /**
+     * Endpoint to search for an employee by ID.
+     * @param employeeId The ID of the employee to search for.
+     * @return List of EmployeeModel objects matching the search criteria.
+     */
+     @RequestMapping(value = "searchById",method= RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
+     @ResponseBody   
+     public List<EmployeeModel> searchById(@PathVariable("employeeId") int employeeId) {
+            return employeeServiceImpl.searchByIds(employeeId);
+        }
 
-	
+    
 }
