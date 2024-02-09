@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="pita.b2.rest_hk.employee_data_restapi.repository.EmployeeRepository">
+    	<resultMap type="EmployeeModel" id="EmployeeModelResult">
+    		<id column="employee_id" property="employeeId" />
+    		<result column="employee_name" property="employeeName" />
+    		<result column="employee_age" property="employeeAge" />
+    		<result column="employee_address" property="employeeAddress" />
+    		<result column="employee_email" property="employeeEmail" />
+    		<result column="employee_phone" property="employeePhone" />
+    		<result column="employee_position" property="employeePosition" />
+    	</resultMap>
+    	<select id="selectAllData" resultMap="EmployeeModelResult">
+    		SELECT employee_id,employee_name,employee_age,employee_address,employee_email,employee_phone,employee_position FROM employee_data;
+    	</select>
+    	<insert id="employeeDataAdd" parameterType="EmployeeModel">
+    		INSERT INTO employee_data (employee_name,employee_age,employee_address,employee_email,employee_phone,employee_position) VALUES (#{employeeName}, #{employeeAge}, #{employeeAddress}, #{employeeEmail}, #{employeePhone}, #{employeePosition});
+    	</insert>
+    	<delete id="deleteEmployee" parameterType="int">
+    		DELETE FROM employee_data WHERE employee_id=#{employeeId};
+    	</delete>
+    	<update id="updateProcess" parameterType="EmployeeModel">
+    		UPDATE employee_data SET employee_name=#{employeeName},employee_age=#{employeeAge},employee_address=#{employeeAddress},employee_email=#{employeeEmail},employee_phone=#{employeePhone},employee_position=#{employeePosition} WHERE employee_id=#{employeeId};
+    	</update>
+    	<select id="searchByName" parameterType="string" resultMap="EmployeeModelResult">
+    		SELECT employee_id,employee_name,employee_age,employee_address,employee_email,employee_phone,employee_position FROM employee_data WHERE employee_name=#{employeeName};
+    	</select>
+    	<select id="searchByIds" parameterType="int" resultMap="EmployeeModelResult">
+    		SELECT employee_id,employee_name,employee_age,employee_address,employee_email,employee_phone,employee_position FROM employee_data WHERE employee_id=#{employeeId};
+    	</select>
+    
+    </mapper>
